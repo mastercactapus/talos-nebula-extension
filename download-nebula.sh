@@ -27,6 +27,11 @@ if [ "$ARCH" = "x86_64" ]; then
   ARCH="amd64"
 elif [ "$ARCH" = "aarch64" ]; then
     ARCH="arm64"
+elif [ "$ARCH" = "armv7l" ]; then
+    ARCH="arm-7"
+else
+  echo "Unsupported architecture: $ARCH"
+  exit 1
 fi
 
 wget "https://github.com/slackhq/nebula/releases/download/$VERSION/nebula-linux-$ARCH.tar.gz" -O "nebula-linux-$ARCH.tar.gz"
