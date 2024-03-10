@@ -1,0 +1,26 @@
+name: nebula
+container:
+  entrypoint: ./nebula
+  mounts:
+    - source: /dev/net/tun
+      destination: /dev/net/tun
+      type: bind
+      options: [bind, rw]
+
+    # Need to use /var instead of /var/etc/nebula due to a Talos bug (mounting the container runs a mkdirall that fails on /var/etc with a read only error)
+    # Talos 1.7+ will handle this entirely differently and this will be unnecessary, but for now we need to do this.
+    #
+    # https://github.com/siderolabs/talos/blob/release-1.6/internal/app/machined/pkg/system/services/extension.go#L154
+    - source: /var
+      destination: /var
+      type: bind
+      options: [bind, ro]
+
+  args:
+    - -config=/var/etc/nebula/config.yaml
+depends:
+  - network:
+      - addresses
+      - connectivity
+  - path: /var/etc/nebula/config.yaml
+restart: always
